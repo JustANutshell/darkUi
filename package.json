@@ -1,0 +1,23 @@
+{
+  "name": "dark-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JustANutshell/darkUi.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JustANutshell/darkUi/issues"
+  },
+  "homepage": "https://github.com/JustANutshell/darkUi#readme",
+  "dependencies": {
+    "@types/node": "^13.9.1"
+  }
+}
