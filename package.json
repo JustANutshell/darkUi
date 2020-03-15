@@ -1,5 +1,5 @@
 {
-  "name": "dark-ui",
+  "name": "@dark_/dark-ui",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,11 +7,8 @@
     "test": "node test",
     "build": "tsc"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JustANutshell/darkUi.git"
-  },
-  "author": "",
+  "repository": "github:JustANutshell/darkUi",
+  "author": "Dark",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/JustANutshell/darkUi/issues"
