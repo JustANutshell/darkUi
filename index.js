@@ -33,27 +33,31 @@ var DarkUi = /** @class */ (function () {
         this.onError = onError;
     }
     DarkUi.prototype.openSiteByName = function (siteName) {
-        var a = this.allSites.find(function (obj) {
+        var a = this.allSites.filter(function (obj) {
             return obj.name === siteName;
         });
-        if (a === undefined) {
-            this.err("WRONG NAME"), ["openSiteByName", siteName];
+        if (a.length >= 1) {
+            if (this.activeSite !== null)
+                this.activeSite.close();
+            a[0].open();
+            this.activeSite = a[0];
         }
         else {
-            a.open();
-            this.activeSite = a;
+            this.err("WRONG SITE", ["openSiteByName", siteName]);
         }
     };
     DarkUi.prototype.openSiteByObject = function (site) {
-        var a = this.allSites.find(function (obj) {
+        var a = this.allSites.filter(function (obj) {
             return obj === site;
         });
-        if (a === undefined) {
-            this.err("WRONG SITE", ["openSiteByObject", site]);
+        if (a.length >= 1) {
+            if (this.activeSite !== null)
+                this.activeSite.close();
+            a[0].open();
+            this.activeSite = a[0];
         }
         else {
-            a.open();
-            this.activeSite = a;
+            this.err("WRONG SITE", ["openSiteByObject", site]);
         }
     };
     DarkUi.prototype.userInput = function (input) {

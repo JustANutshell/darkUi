@@ -46,26 +46,28 @@ export class DarkUi{
     }
 
     openSiteByName(siteName:string){
-        let a=this.allSites.find((obj:DarkUiSite)=>{
+        let a=this.allSites.filter((obj:DarkUiSite)=>{
             return obj.name===siteName;
         })
-        if(a===undefined){
-            this.err("WRONG NAME"),["openSiteByName",siteName];
+        if(a.length>=1){
+            if(this.activeSite!==null) this.activeSite.close();
+            a[0].open();
+            this.activeSite=a[0];
         }else{
-            a.open();
-            this.activeSite=a;
+            this.err("WRONG SITE",["openSiteByName",siteName]);
         }
     }
 
     openSiteByObject(site:DarkUiSite){
-        let a=this.allSites.find((obj:DarkUiSite)=>{
+        let a=this.allSites.filter((obj:DarkUiSite)=>{
             return obj===site;
         })
-        if(a===undefined){
-            this.err("WRONG SITE",["openSiteByObject",site]);
+        if(a.length>=1){
+            if(this.activeSite!==null) this.activeSite.close();
+            a[0].open();
+            this.activeSite=a[0];
         }else{
-            a.open();
-            this.activeSite=a;
+            this.err("WRONG SITE",["openSiteByObject",site]);
         }
     }
 
