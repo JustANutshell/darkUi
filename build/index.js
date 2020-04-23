@@ -32,6 +32,7 @@ var DarkUiNotification = /** @class */ (function () {
         this.startedDisplaying = null;
         this.duration = duration;
         this.content = content;
+        this.created = new Date();
     }
     DarkUiNotification.prototype.getContent = function () {
         return typeof this.content === "function" ? this.content(this) : this.content;
@@ -59,14 +60,14 @@ var DarkUi = /** @class */ (function () {
             this.activeSite = a[0];
         }
         else {
-            this.err("WRONG SITE", ["openSite", site]);
+            this.err("WRONG SITE", true, ["openSite", site]);
         }
     };
     DarkUi.prototype.userInput = function (input) {
         var a = this.siteSwitch(input);
         if (a === null) {
             if (this.activeSite === null)
-                this.err("NO SITE SELECTED", "userinput");
+                this.err("NO SITE SELECTED", false, "userinput");
             else
                 this.activeSite.userInput(input);
         }
@@ -83,7 +84,7 @@ var DarkUi = /** @class */ (function () {
                     if (this.allNotifications[b] === a)
                         this.allNotifications[b] = undefined;
                 }
-                this.err("INTERNAL", ["notificaton was opend without starttime", a]);
+                this.err("INTERNAL", false, ["notificaton was opend without starttime", a]);
             }
             else {
                 if (this.activeNotification.startedDisplaying.getTime() + this.activeNotification.duration < (new Date()).getTime()) {
@@ -97,11 +98,46 @@ var DarkUi = /** @class */ (function () {
             }
         }
         if (this.activeNotification === null) { // search for new notification
-            var a = arrFunc_1.getRealFirstArrEntry(this.allNotifications);
-            if (a !== false) {
-                var b = this.allNotifications[a];
+            /*let a=getRealFirstArrEntry(this.allNotifications);
+            if(a!==false){
+                let b=this.allNotifications[a];
+                if(b===undefined){
+                    this.err("INTERNAL",["code:1"]);
+                }else{
+                    this.activeNotification=b;
+                    this.activeNotification.startedDisplaying=new Date();
+                }
+            }*/
+            var x_1 = this;
+            var a = this.allNotifications.filter(function (a) { return a !== undefined; }).sort(function (a, b) {
+                if (a === undefined || b === undefined) {
+                    x_1.err("INTERNAL", false, ["code:2"]);
+                    if (a === undefined && b === undefined) {
+                        return 0;
+                    }
+                    else if (a === undefined) {
+                        return -1;
+                    }
+                    else {
+                        return 1;
+                    }
+                }
+                else {
+                    if (a.created > b.created) {
+                        return 1;
+                    }
+                    else if (a.created < b.created) {
+                        return -1;
+                    }
+                    else {
+                        return 0;
+                    }
+                }
+            });
+            if (a.length >= 1) {
+                var b = a[0];
                 if (b === undefined) {
-                    this.err("INTERNAL", ["code:1"]);
+                    this.err("INTERNAL", false, ["code:1"]);
                 }
                 else {
                     this.activeNotification = b;
@@ -114,21 +150,25 @@ var DarkUi = /** @class */ (function () {
         }
         else {
             if (this.activeSite === null) {
-                this.err("NO SITE SELECTED", "displayactu");
+                this.err("NO SITE SELECTED", false, "displayactu");
                 return null;
             }
             else
                 return this.activeSite.getContent();
         }
     };
-    DarkUi.prototype.openNotification = function (content, duration) {
+    DarkUi.prototype.createNotification = function (content, duration) {
         if (duration === void 0) { duration = 3000; }
         var a = arrFunc_1.getRealFirstArrMissEntry(this.allNotifications);
         this.allNotifications[a] = new DarkUiNotification(content, duration);
     };
-    DarkUi.prototype.err = function (name, other) {
+    DarkUi.prototype.err = function (name, fatal, other) {
+        if (fatal === void 0) { fatal = false; }
         if (other === void 0) { other = null; }
         this.onError(name, other);
+        if (fatal) {
+            throw { name: name, other: other };
+        }
     };
     return DarkUi;
 }());

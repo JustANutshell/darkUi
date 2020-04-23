@@ -8,5 +8,5 @@ export function getRealFirstArrMissEntry(arr:any[]){
 	for(let a=0;a<arr.length;a++){
 		if(arr[a]===undefined||arr[a]===null) return a;
 	}
-	return 0;
+	return arr.length;
 }

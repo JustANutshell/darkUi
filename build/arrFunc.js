@@ -13,6 +13,6 @@ function getRealFirstArrMissEntry(arr) {
         if (arr[a] === undefined || arr[a] === null)
             return a;
     }
-    return 0;
+    return arr.length;
 }
 exports.getRealFirstArrMissEntry = getRealFirstArrMissEntry;

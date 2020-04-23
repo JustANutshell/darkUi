@@ -22,6 +22,6 @@ setInterval(function () {
 }, 1000);
 standard_input.on('data', function (data_) {
     var data = String(data_).replace(/(^[\s\n\r]*|[\s\n\r]*$)/g, "").split('#');
-    test.openNotification(data[0], Number(data[1]));
+    test.createNotification(data[0], Number(data[1] === undefined ? 10000 : data[1]));
     console.log(data);
 });

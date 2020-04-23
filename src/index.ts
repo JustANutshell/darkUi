@@ -38,11 +38,13 @@ class DarkUiNotification{
 
     public duration:number; // ms
     public content:any;
+    public created:Date;
     public startedDisplaying:Date|null=null;
 
     constructor(content:any,duration:number=3000){
         this.duration=duration;
         this.content=content;
+        this.created=new Date();
     }
     
     getContent(){
@@ -74,14 +76,14 @@ export class DarkUi{
             a[0].open();
             this.activeSite=a[0];
         }else{
-            this.err("WRONG SITE",["openSite",site]);
+            this.err("WRONG SITE",true,["openSite",site]);
         }
     }
 
     userInput(input:any){
         let a=this.siteSwitch(input);
         if(a===null){
-            if(this.activeSite===null) this.err("NO SITE SELECTED","userinput"); else
+            if(this.activeSite===null) this.err("NO SITE SELECTED",false,"userinput"); else
             this.activeSite.userInput(input);
         }else{
             this.openSite(a);
@@ -96,7 +98,7 @@ export class DarkUi{
                 for(let b=0;b<this.allNotifications.length;b++){
                     if(this.allNotifications[b]===a) this.allNotifications[b]=undefined;
                 }
-                this.err("INTERNAL",["notificaton was opend without starttime",a]);
+                this.err("INTERNAL",false,["notificaton was opend without starttime",a]);
             }else{
                 if(this.activeNotification.startedDisplaying.getTime()+this.activeNotification.duration<(new Date()).getTime()){
                     let a=this.activeNotification;
@@ -108,11 +110,41 @@ export class DarkUi{
             }
         }
         if(this.activeNotification===null){ // search for new notification
-            let a=getRealFirstArrEntry(this.allNotifications);
+            /*let a=getRealFirstArrEntry(this.allNotifications);
             if(a!==false){
                 let b=this.allNotifications[a];
                 if(b===undefined){
                     this.err("INTERNAL",["code:1"]);
+                }else{
+                    this.activeNotification=b;
+                    this.activeNotification.startedDisplaying=new Date();
+                }
+            }*/
+            let x=this;
+            let a=this.allNotifications.filter(function(a){return a!==undefined;}).sort(function(a,b){
+                if(a===undefined||b===undefined){
+                    x.err("INTERNAL",false,["code:2"]);
+                    if(a===undefined&&b===undefined){
+                        return 0;
+                    }else if(a===undefined){
+                        return -1;
+                    }else{
+                        return 1;
+                    }
+                }else{
+                    if(a.created>b.created){
+                        return 1;
+                    }else if(a.created<b.created){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+                }
+            });
+            if(a.length>=1){
+                let b=a[0];
+                if(b===undefined){
+                    this.err("INTERNAL",false,["code:1"]);
                 }else{
                     this.activeNotification=b;
                     this.activeNotification.startedDisplaying=new Date();
@@ -123,18 +155,19 @@ export class DarkUi{
             return this.activeNotification.getContent();
         }else{
             if(this.activeSite===null){
-                this.err("NO SITE SELECTED","displayactu");
+                this.err("NO SITE SELECTED",false,"displayactu");
                 return null;
             }else return this.activeSite.getContent();
         }
     }
     
-    openNotification(content:any,duration:number=3000){
+    createNotification(content:any,duration:number=3000){
         let a=getRealFirstArrMissEntry(this.allNotifications);
         this.allNotifications[a]=new DarkUiNotification(content,duration);
     }
 
-    private err(name:string,other:any=null){
+    private err(name:string,fatal:boolean=false,other:any=null){
         this.onError(name,other);
+        if(fatal){throw {name:name,other:other};}
     }
 }

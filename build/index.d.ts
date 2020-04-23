@@ -14,6 +14,7 @@ export declare class DarkUiSite {
 declare class DarkUiNotification {
     duration: number;
     content: any;
+    created: Date;
     startedDisplaying: Date | null;
     constructor(content: any, duration?: number);
     getContent(): any;
@@ -30,7 +31,7 @@ export declare class DarkUi {
     openSite(site: DarkUiSite | string): void;
     userInput(input: any): void;
     getContent(): any;
-    openNotification(content: any, duration?: number): void;
+    createNotification(content: any, duration?: number): void;
     private err;
 }
 export {};
